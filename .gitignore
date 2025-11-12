@@ -9,3 +9,6 @@ frontend/node_modules/
 integrations/.env
 integrations/**/node_modules/
 *.log
+
+# local only
+.git-filter-repo-replacements.txt
