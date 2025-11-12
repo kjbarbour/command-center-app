@@ -1,0 +1,20 @@
+{
+  "name": "command-center-backend",
+  "version": "1.0.0",
+  "main": "src/index.ts",
+  "license": "MIT",
+  "scripts": {
+    "dev": "ts-node src/api/healthcheck.ts",
+    "prisma:generate": "prisma generate",
+    "prisma:push": "prisma db push",
+    "run:backfill": "ts-node src/scripts/backfill-normalized-name.ts"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.0.0"
+  },
+  "devDependencies": {
+    "prisma": "^6.0.0",
+    "typescript": "^5.4.0",
+    "ts-node": "^10.9.1"
+  }
+}

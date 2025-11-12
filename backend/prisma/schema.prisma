@@ -1,0 +1,30 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Customer {
+  id             String   @id @default(uuid())
+  name           String
+  normalizedName String?
+  arr            Float?
+  specifier      String?
+  projects       IndustryProject[]
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model IndustryProject {
+  id                String   @id @default(uuid())
+  name              String
+  capacityMW        Float?
+  capacityMWh       Float?
+  matchedCustomerId String?
+  matchedCustomer   Customer? @relation(fields: [matchedCustomerId], references: [id])
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}

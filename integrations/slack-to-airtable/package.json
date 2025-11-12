@@ -1,0 +1,13 @@
+{
+    "name": "slack-to-airtable",
+    "private": true,
+    "type": "module",
+    "dependencies": {
+      "@slack/bolt": "^3.18.0",
+      "node-fetch": "^3.3.2",
+      "dotenv": "^16.4.5"
+    },
+    "scripts": {
+      "start": "node index.js"
+    }
+  }

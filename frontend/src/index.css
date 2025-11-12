@@ -1,0 +1,178 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* --------------------------------------------------
+   🌈 Stem Brand Design System (Global Theme)
+-------------------------------------------------- */
+
+/* CSS Variables (Light Theme) */
+:root {
+  --sidebar-w: 280px;
+
+  /* Brand colors */
+  --stem-blue: #0DB6CF;
+  --stem-navy: #002B56;
+  --stem-teal: #0B96AA;
+  --stem-yellow: #F4D35E;
+  --stem-orange: #EE964B;
+  --stem-grey: #707070;
+  --stem-light: #F4F4F4;
+
+  /* Backgrounds / surfaces */
+  --bg: #ffffff;
+  --surface: #ffffff;
+  --surface-2: #f9fafb;
+
+  /* Typography */
+  --text: #002B56;
+  --muted: #707070;
+
+  /* Focus / ring */
+  --ring: var(--stem-blue);
+}
+
+/* Dark Mode */
+.dark {
+  --bg: #0f172a;
+  --surface: #1e293b;
+  --surface-2: #273449;
+  --text: #f8fafc;
+  --muted: #94a3b8;
+  --ring: var(--stem-teal);
+}
+
+/* --------------------------------------------------
+   🩵 Global Base Styles
+-------------------------------------------------- */
+
+body {
+  @apply font-sans text-[15px] leading-relaxed text-[color:var(--text)] bg-[color:var(--bg)] antialiased;
+}
+
+/***** Scrollbars *****/
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+*::-webkit-scrollbar-thumb {
+  background: #e5e7eb;
+  border-radius: 9999px;
+}
+*::-webkit-scrollbar-thumb:hover {
+  background: #d1d5db;
+}
+
+/* --------------------------------------------------
+   🧩 Reusable Utility Layers
+-------------------------------------------------- */
+
+@layer utilities {
+  /* Glass / frosted surfaces */
+  .glass {
+    @apply bg-white/70 backdrop-blur supports-[backdrop-filter]:bg-white/60;
+  }
+
+  /* Container sizes */
+  .container-narrow {
+    @apply max-w-screen-2xl mx-auto px-4;
+  }
+
+  /* Cards */
+  .card {
+    background: var(--surface);
+    @apply rounded-2xl;
+  }
+  .card-hover {
+    @apply hover:-translate-y-0.5 hover:shadow-md;
+  }
+
+  /* Badges */
+  .badge {
+    @apply inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium;
+  }
+
+  /* Gradients */
+  .bg-stem-gradient {
+    background-image: linear-gradient(135deg, var(--stem-blue) 0%, var(--stem-navy) 100%);
+  }
+  .bg-stem-highlight {
+    background-image: linear-gradient(135deg, var(--stem-yellow) 0%, var(--stem-orange) 100%);
+  }
+
+  /* Dot-grid texture */
+  .bg-energy-nodes {
+    background-image: radial-gradient(circle, rgba(13, 182, 207, 0.25) 1px, transparent 1px);
+    background-size: 24px 24px;
+  }
+
+  /* Fade-in and shimmer animations */
+  .animate-shimmer {
+    @apply relative overflow-hidden bg-slate-200 dark:bg-slate-700/50;
+  }
+  .animate-shimmer::before {
+    content: "";
+    @apply absolute inset-0 -translate-x-full animate-[shimmer_1.2s_linear_infinite] bg-gradient-to-r from-transparent via-white/60 dark:via-white/10 to-transparent;
+  }
+
+  /* Typography helpers */
+  .font-heading {
+    font-family: "Helvetica Neue", Arial, sans-serif;
+  }
+  .heading-lg {
+    @apply font-heading text-2xl font-bold text-[color:var(--stem-navy)];
+  }
+  .heading-md {
+    @apply font-heading text-xl font-semibold text-[color:var(--stem-navy)];
+  }
+  .heading-sm {
+    @apply font-heading text-base font-medium text-[color:var(--stem-navy)];
+  }
+  .text-muted {
+    @apply text-[color:var(--muted)];
+  }
+
+  /* Buttons */
+  .btn-primary {
+    background-color: var(--stem-blue);
+    color: #ffffff;
+    font-weight: 500;
+    padding: 0.5rem 1rem; /* py-2 px-4 */
+    border-radius: 1rem; /* 2xl */
+    transition: background-color 150ms ease, color 150ms ease, border-color 150ms ease;
+  }
+  .btn-primary:hover {
+    background-color: var(--stem-teal);
+  }
+  .btn-secondary {
+    background-color: transparent;
+    border: 1px solid var(--stem-blue);
+    color: var(--stem-blue);
+    font-weight: 500;
+    padding: 0.5rem 1rem; /* py-2 px-4 */
+    border-radius: 1rem; /* 2xl */
+    transition: background-color 150ms ease, color 150ms ease, border-color 150ms ease;
+  }
+  .btn-secondary:hover {
+    background-color: rgba(13, 182, 207, 0.10); /* stem-blue @ 10% */
+  }
+}
+
+/* --------------------------------------------------
+   ✨ Animations (Keyframes)
+-------------------------------------------------- */
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+@keyframes fadeInUp {
+  0% { opacity: 0; transform: translateY(6px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+/* Utility aliases for animations */
+.animate-fadeInUp {
+  animation: fadeInUp .35s ease-out both;
+}

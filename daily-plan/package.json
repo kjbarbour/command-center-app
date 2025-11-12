@@ -1,0 +1,49 @@
+{
+  "name": "command-center-app",
+  "version": "1.0.0",
+  "description": "ADHD-friendly task widget",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder --mac --arm64",
+    "server": "node server.js",
+    "daily-plan": "node index.mjs",
+    "daily-plan:dry": "node index.mjs --dry-run"
+  },
+  "build": {
+    "appId": "com.kevin.command-center",
+    "productName": "Command Center",
+    "mac": {
+      "category": "public.app-category.productivity",
+      "target": [
+        {
+          "target": "dir",
+          "arch": [
+            "arm64"
+          ]
+        }
+      ]
+    },
+    "files": [
+      "main.js",
+      "renderer.js",
+      "styles.css",
+      "index.html",
+      "quick-add.html"
+    ],
+    "directories": {
+      "output": "dist"
+    }
+  },
+  "devDependencies": {
+    "electron": "^27.3.0",
+    "electron-builder": "^24.6.4"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.68.0",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0",
+    "node-fetch": "^3.3.2"
+  }
+}

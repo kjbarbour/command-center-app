@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Quick Add Task</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 24px;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        input[type="text"],
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 8px;
+            background: rgba(255,255,255,0.15);
+            color: white;
+            font-size: 14px;
+            backdrop-filter: blur(10px);
+        }
+
+        input[type="text"]::placeholder {
+            color: rgba(255,255,255,0.5);
+        }
+
+        select {
+            cursor: pointer;
+        }
+
+        select option {
+            background: #764ba2;
+            color: white;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 30px;
+        }
+
+        button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        #save-btn {
+            background: rgba(34, 197, 94, 0.9);
+            color: white;
+        }
+
+        #save-btn:hover:not(:disabled) {
+            background: rgba(34, 197, 94, 1);
+            transform: translateY(-2px);
+        }
+
+        #cancel-btn {
+            background: rgba(255,255,255,0.2);
+            color: white;
+        }
+
+        #cancel-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .hint {
+            font-size: 12px;
+            color: rgba(255,255,255,0.6);
+            margin-top: 4px;
+        }
+    </style>
+</head>
+<body>
+    <h1>⚡ Quick Add Task</h1>
+    
+    <form id="quick-add-form">
+        <div class="form-group">
+            <label for="task-name">Task Name *</label>
+            <input 
+                type="text" 
+                id="task-name" 
+                placeholder="What needs to be done?"
+                required
+                autofocus
+            >
+        </div>
+
+        <div class="form-group">
+            <label for="project">Project</label>
+            <select id="project">
+                <option value="Personal">🏠 Personal</option>
+                <option value="CRM Dashboard">📊 CRM Dashboard</option>
+                <option value="Stem Sales">💼 Stem Sales</option>
+                <option value="Command Center">🎯 Command Center</option>
+                <option value="Business Development">🤝 Business Development</option>
+                <option value="Home Improvement">🔨 Home Improvement</option>
+                <option value="Learning">📚 Learning</option>
+                <option value="Health">💪 Health</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="priority">Priority</label>
+            <select id="priority">
+                <option value="P1-Critical">🔴 P1 - Critical</option>
+                <option value="P2-High">🟡 P2 - High</option>
+                <option value="P3-Medium" selected>🔵 P3 - Medium</option>
+                <option value="P4-Low">⚪ P4 - Low</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="energy">Energy Level</label>
+            <select id="energy">
+                <option value="High">⚡⚡⚡ High</option>
+                <option value="Medium" selected>⚡⚡ Medium</option>
+                <option value="Low">⚡ Low</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="time-estimate">Time Estimate</label>
+            <input 
+                type="text" 
+                id="time-estimate" 
+                placeholder="e.g., 30m, 2h, 1.5h"
+            >
+            <div class="hint">Optional - helps with scheduling</div>
+        </div>
+
+        <div class="button-group">
+            <button type="button" id="cancel-btn">Cancel (ESC)</button>
+            <button type="submit" id="save-btn">Save Task (⏎)</button>
+        </div>
+    </form>
+
+    <script>
+        const { ipcRenderer } = require('electron');
+
+        const AIRTABLE_TOKEN = 'AIRTABLE_TOKEN_REDACTED.44d1b12f6a83e20f6d2e8cce95f0a11ca620fc63833988186259775151510950';
+        const BASE_ID = 'appQlPzbpST2aQ3ca';
+        const TABLE_NAME = 'Tasks';
+
+        // Form submission
+        document.getElementById('quick-add-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const taskName = document.getElementById('task-name').value.trim();
+            const project = document.getElementById('project').value;
+            const priority = document.getElementById('priority').value;
+            const energy = document.getElementById('energy').value;
+            const timeEstimate = document.getElementById('time-estimate').value.trim();
+
+            if (!taskName) return;
+
+            const saveBtn = document.getElementById('save-btn');
+            saveBtn.disabled = true;
+            saveBtn.textContent = 'Saving...';
+
+            try {
+                const https = require('https');
+                const data = JSON.stringify({
+                    fields: {
+                        'Task Name': taskName,
+                        'Status': 'This Week',
+                        'Priority': priority,
+                        'Energy Level': energy,
+                        'Time Estimate': timeEstimate,
+                        'Source': 'Quick Add',
+                        'Project': project
+                    }
+                });
+
+                const options = {
+                    hostname: 'api.airtable.com',
+                    path: `/v0/${BASE_ID}/${TABLE_NAME}`,
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${AIRTABLE_TOKEN}`,
+                        'Content-Type': 'application/json',
+                        'Content-Length': data.length
+                    }
+                };
+
+                await new Promise((resolve, reject) => {
+                    const req = https.request(options, (res) => {
+                        let responseData = '';
+                        res.on('data', chunk => responseData += chunk);
+                        res.on('end', () => {
+                            if (res.statusCode === 200) {
+                                resolve();
+                            } else {
+                                reject(new Error(`Failed: ${res.statusCode}`));
+                            }
+                        });
+                    });
+                    req.on('error', reject);
+                    req.write(data);
+                    req.end();
+                });
+
+                // Notify main window to reload
+                ipcRenderer.send('task-added');
+                
+                // Close window
+                window.close();
+
+            } catch (error) {
+                console.error('Error saving task:', error);
+                alert('Failed to save task. Please try again.');
+                saveBtn.disabled = false;
+                saveBtn.textContent = 'Save Task (⏎)';
+            }
+        });
+
+        // Cancel button
+        document.getElementById('cancel-btn').addEventListener('click', () => {
+            window.close();
+        });
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                window.close();
+            }
+        });
+    </script>
+</body>
+</html>

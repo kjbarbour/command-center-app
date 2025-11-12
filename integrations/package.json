@@ -1,0 +1,14 @@
+{
+    "name": "command-center-integrations",
+    "type": "module",
+    "private": true,
+    "dependencies": {
+      "@azure/msal-node": "^2.6.6",
+      "@slack/bolt": "^3.18.0",
+      "node-fetch": "^3.3.2"
+    },
+    "scripts": {
+      "slack": "node ./slack/index.js",
+      "outlook": "node ./outlook/poller.js"
+    }
+  }
